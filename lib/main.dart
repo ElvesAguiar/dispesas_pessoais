@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'dart:math';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
 import 'models/transaction.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 main() => runApp(ExpensesApp());
 
@@ -48,8 +52,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-  ];
+  final _baseUrl = 'http://10.0.2.2:8080';
+  final List<Transaction> _transactions = [];
+  @override
+  void initState() {
+    super.initState();
+    _loadTransactions(); 
+  }
+
+  Future<void> _loadTransactions() async {
+    try {
+      final response = await http.get(Uri.parse('$_baseUrl/transactions'));
+
+      if (response.statusCode == 200) {
+     
+        final List<dynamic> decodedData = jsonDecode(response.body);
+      
+        setState(() {
+          _transactions.clear();
+          _transactions
+              .addAll(decodedData.map((data) => Transaction.fromJson(data)));
+        });
+      } else {
+        print(
+            'Erro ao carregar transações. Status code: ${response.statusCode}');
+      }
+    } catch (error, stackTrace) {
+      print('Erro ao carregar transações: $error');
+      print('Stack trace: $stackTrace');
+    }
+  }
 
   List<Transaction> get _recentTransaction {
     return _transactions.where((tr) {
@@ -59,20 +91,48 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value,DateTime date) {
-    final newTransaction = Transaction(
-      Random().nextDouble().toString(),
-      title,
-      value,
-      date,
+ _addTransaction(String title, double value, DateTime date) async {
+  final newTransaction = Transaction(
+    id: Random().nextDouble().toString(),
+    title: title,
+    value: value,
+    date: date,
+  );
+  print('Executando _addTransaction');
+
+  try {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/transactions'),
+      headers: {
+        'Content-Type': 'application/json', // Ensure this line is present
+      },
+      body: jsonEncode(
+        {
+          "title": newTransaction.title,
+          "value": newTransaction.value,
+          "date": DateFormat('yyyy-MM-dd').format(newTransaction.date)
+        },
+      ),
     );
 
-    setState(() {
-      _transactions.add(newTransaction);
-    });
+    if (response.statusCode == 201) {
+ 
+      setState(() {
+        _transactions.add(newTransaction);
+      });
 
-    Navigator.of(context).pop();
+      print(jsonDecode(response.body));
+      print('Response status: ${response.statusCode}');
+    } else {
+      print('Falha ao adicionar transação. Status code: ${response.statusCode}');
+    }
+  } catch (error, stackTrace) {
+    print('Error: $error');
+    print('Stack trace: $stackTrace');
   }
+
+  Navigator.of(context).pop();
+}
 
   _deleteTransaction(String id) {
     setState(() {
