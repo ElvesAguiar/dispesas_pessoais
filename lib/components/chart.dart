@@ -55,7 +55,7 @@ class Chart extends StatelessWidget {
               child: ChartBar(
                 tr['day'].toString(),
                 double.parse(tr['value'].toString()),
-                (tr['value'] as double) /_weekTotalValue,
+                _weekTotalValue == 0 ? 0 : (tr['value'] as double) /_weekTotalValue,
               ),
             );
           }).toList(),
