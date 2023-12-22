@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print(jsonDecode(response.body));
       print('Response status: ${response.statusCode}');
     } else {
-      print('Falha ao adicionar transação. Status code: ${response.statusCode}');
+      print('Falha ao deletar transação. Status code: ${response.statusCode}');
     }
   } catch (error, stackTrace) {
     print('Error: $error');
