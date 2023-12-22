@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
+import 'package:expenses/services/TransactionService.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
+
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
 import 'models/transaction.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 main() => runApp(ExpensesApp());
 
@@ -52,34 +49,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _baseUrl = 'http://10.0.2.2:8080';
+  final TransactionService _transactionService = TransactionService();
   final List<Transaction> _transactions = [];
   @override
   void initState() {
     super.initState();
-    _loadTransactions(); 
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _loadTransactions();
   }
 
   Future<void> _loadTransactions() async {
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/transactions'));
+      final transactions = await _transactionService.getTransactions();
 
-      if (response.statusCode == 200) {
-     
-        final List<dynamic> decodedData = jsonDecode(response.body);
-      
-        setState(() {
-          _transactions.clear();
-          _transactions
-              .addAll(decodedData.map((data) => Transaction.fromJson(data)));
-        });
-      } else {
-        print(
-            'Erro ao carregar transações. Status code: ${response.statusCode}');
-      }
+      setState(() {
+        _transactions.clear();
+        _transactions.addAll(transactions);
+      });
     } catch (error, stackTrace) {
-      print('Erro ao carregar transações: $error');
-      print('Stack trace: $stackTrace');
+      _handleError('Erro ao carregar transações', error, stackTrace);
     }
   }
 
@@ -91,74 +82,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
- _addTransaction(String title, double value, DateTime date) async {
-  final newTransaction = Transaction(
-    id: "",
-    title: title,
-    value: value,
-    date: date,
-  );
-  print('Executando _addTransaction');
-
-  try {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/transactions'),
-      headers: {
-        'Content-Type': 'application/json', // Ensure this line is present
-      },
-      body: jsonEncode(
-        {
-          "title": newTransaction.title,
-          "value": newTransaction.value,
-          "date": DateFormat('yyyy-MM-dd').format(newTransaction.date)
-        },
-      ),
-    );
-
-    if (response.statusCode == 201) {
- 
-      setState(() {
-        _transactions.add(newTransaction);
-      });
-      _loadTransactions();
-
-      print(jsonDecode(response.body));
-      print('Response status: ${response.statusCode}');
-    } else {
-      print('Falha ao adicionar transação. Status code: ${response.statusCode}');
-    }
-  } catch (error, stackTrace) {
-    print('Error: $error');
-    print('Stack trace: $stackTrace');
-  }
-
-  Navigator.of(context).pop();
-}
-
-  _deleteTransaction(String id) async{
-
+  _addTransaction(String title, double value, DateTime date) async {
     try {
-    final response = await http.delete(
-      Uri.parse('$_baseUrl/transactions'+'/${id}'),
-      
-    );
-
-    if (response.statusCode == 204) {
- 
-      setState(() {
-      _transactions.removeWhere((tr) => tr.id == id);
-    });
-
-      print(jsonDecode(response.body));
-      print('Response status: ${response.statusCode}');
-    } else {
-      print('Falha ao deletar transação. Status code: ${response.statusCode}');
+      await _transactionService.addTransaction(title, value, date);
+      await _loadTransactions();
+    } catch (error, stackTrace) {
+      _handleError('Erro ao adicionar transação', error, stackTrace);
     }
-  } catch (error, stackTrace) {
-    print('Error: $error');
-    print('Stack trace: $stackTrace');
+
+    Navigator.of(context).pop();
   }
-    
+
+ _deleteTransaction(String id) async {
+    try {
+      await _transactionService.deleteTransaction(id);
+      await _loadTransactions();
+    } catch (error, stackTrace) {
+      _handleError('Erro ao deletar transação', error, stackTrace);
+    }
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -168,6 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
         return TransactionForm(_addTransaction);
       },
     );
+  }
+
+  void _handleError(String context, Object error, StackTrace stackTrace) {
+    print('$context: $error');
+    print('Stack trace: $stackTrace');
   }
 
   @override
