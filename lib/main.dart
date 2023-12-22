@@ -49,9 +49,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
   final TransactionService _transactionService = TransactionService();
   final List<Transaction> _transactions = [];
   @override
+  
   void initState() {
     super.initState();
     _initializeData();
