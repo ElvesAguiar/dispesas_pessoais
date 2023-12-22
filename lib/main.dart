@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
  _addTransaction(String title, double value, DateTime date) async {
   final newTransaction = Transaction(
-    id: Random().nextDouble().toString(),
+    id: "",
     title: title,
     value: value,
     date: date,
@@ -120,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _transactions.add(newTransaction);
       });
+      _loadTransactions();
 
       print(jsonDecode(response.body));
       print('Response status: ${response.statusCode}');
