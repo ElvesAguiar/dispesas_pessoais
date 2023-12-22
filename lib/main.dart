@@ -134,10 +134,30 @@ class _MyHomePageState extends State<MyHomePage> {
   Navigator.of(context).pop();
 }
 
-  _deleteTransaction(String id) {
-    setState(() {
+  _deleteTransaction(String id) async{
+
+    try {
+    final response = await http.delete(
+      Uri.parse('$_baseUrl/transactions'+'/${id}'),
+      
+    );
+
+    if (response.statusCode == 204) {
+ 
+      setState(() {
       _transactions.removeWhere((tr) => tr.id == id);
     });
+
+      print(jsonDecode(response.body));
+      print('Response status: ${response.statusCode}');
+    } else {
+      print('Falha ao adicionar transação. Status code: ${response.statusCode}');
+    }
+  } catch (error, stackTrace) {
+    print('Error: $error');
+    print('Stack trace: $stackTrace');
+  }
+    
   }
 
   _openTransactionFormModal(BuildContext context) {
