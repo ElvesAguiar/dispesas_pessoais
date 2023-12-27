@@ -1,16 +1,30 @@
-# expenses
+# Despesas Pessoais - Frontend
 
-A new Flutter project.
+Bem-vindo ao repositório do Frontend da aplicação Despesas Pessoais! 🚀
+## Tecnologias Necessárias
 
-## Getting Started
+- **Flutter:** Certifique-se de ter o Flutter instalado em seu sistema.
+- **Dart:** A linguagem de programação utilizada pelo Flutter. Incluída na instalação do Flutter.
+- **Visual Studio Code:** IDE recomendada para o desenvolvimento em Flutter.
 
-This project is a starting point for a Flutter application.
+## Descrição
 
-A few resources to get you started if this is your first Flutter project:
+Este projeto foi desenvolvido utilizando o Flutter/Dart para criar uma aplicação que gerencia as despesas pessoais do usuário. A experiência do usuário é nativa em ambas as plataformas Android e iOS, graças ao poder do Flutter.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Como Iniciar
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. **Clone o Repositório:**
+   ```bash
+   git clone https://github.com/ElvesAguiar/dispesas_pessoais.git
+   cd dispesas_pessoais
+   flutter pub get
+   flutter run
+
+## Obrigado
+Sinta-se à vontade para explorar o código, fazer sugestões ou contribuir para o desenvolvimento.
+## Ambiente de Desenvolvimento
+- IDE: Visual Studio Code
+- Linguagem: Dart
+- Framework: Flutter
+- Controle de Versão: Git
+
