@@ -31,7 +31,7 @@ Sinta-se à vontade para explorar o código, fazer sugestões ou contribuir para
 - Framework: Flutter
 - Controle de Versão: Git
 
-# Autor
+## Autor
 
 Elves Nogueira de Aguiar
 
