@@ -1,6 +1,9 @@
 # Despesas Pessoais - Frontend
 
+
 Bem-vindo ao repositório do Frontend da aplicação Despesas Pessoais! 🚀
+
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/ElvesAguiar/dscommerce/blob/main/LICENSE) 
 ## Tecnologias Necessárias
 
 - **Flutter:** Certifique-se de ter o Flutter instalado em seu sistema.
@@ -27,4 +30,11 @@ Sinta-se à vontade para explorar o código, fazer sugestões ou contribuir para
 - Linguagem: Dart
 - Framework: Flutter
 - Controle de Versão: Git
+
+# Autor
+
+Elves Nogueira de Aguiar
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/elves-aguiar-91a1551a0/)
+          
 
